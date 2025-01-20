@@ -198,13 +198,7 @@ class SocialSharingPlugin: FlutterPlugin, MethodCallHandler {
       // Ensure the intent opens only Snapchat
       setPackage("com.snapchat.android")
     }
-
-    // Check if Snapchat is available and start the activity
-    if (intent.resolveActivity(context.packageManager) != null) {
       context.startActivity(intent)
-    } else {
-      Log.e("SnapchatSharing", "Snapchat is not installed on this device")
-    }
   }
 
   private fun addStickerToSnapchat(
@@ -250,10 +244,8 @@ class SocialSharingPlugin: FlutterPlugin, MethodCallHandler {
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     intent.putExtra(Intent.EXTRA_STREAM, stickerUri)
     Log.d("SnapchatIntegration", "stickerPath $stickerPath Uri $stickerUri intent $intent")
-    try {
+
       context.startActivity(intent)
-    } catch (e: Exception) {
-      Log.e("SnapchatIntegration", "Error launching Snapchat: ${e.message}")
-    }
+
   }
 }
