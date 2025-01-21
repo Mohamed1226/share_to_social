@@ -38,19 +38,14 @@ public class SocialSharingPlugin: NSObject, FlutterPlugin {
                 guard let args = call.arguments as? [String: Any] else { return result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil)) }
                 self.launchSnapchatPreviewWithMultipleFiles(args: args, result: result)
 
-            case "shareToTikTokMultiFiles1":
+            case "shareToTikTokMultiFiles":
                 guard let args = call.arguments as? [String: Any] else {return result(FlutterError(code: "INVALID_ARGUMENT", message: "File paths required", details: nil)) }
-                self.shareToTikTokMultiFiles1(args: args, result : result)
+                self.shareToTikTokMultiFiles(args: args, result : result)
 
-            case "shareToTiktokOneFile":
-                guard let args = call.arguments as? [String: Any] else {return result(FlutterError(code: "INVALID_ARGUMENT", message: "File paths required", details: nil)) }
-                self.shareToTiktokOneFile(args: args, result : result)
-
-                
-            case "shareToTiktokMultiFilesV1":
-                guard let args = call.arguments as? [String: Any] else {return result(FlutterError(code: "INVALID_ARGUMENT", message: "File paths required", details: nil)) }
-                self.shareToTiktokMultiFilesV1(args: args, result : result)
-                
+//             case "shareToTiktokMultiFilesV1":
+//                 guard let args = call.arguments as? [String: Any] else {return result(FlutterError(code: "INVALID_ARGUMENT", message: "File paths required", details: nil)) }
+//                 self.shareToTiktokMultiFilesV1(args: args, result : result)
+//
             case "shareToInstagram":
                 guard let args = call.arguments as? [String: Any] else { return result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil)) }
                 self.shareToInstagram(args: args, result: result)
@@ -58,11 +53,6 @@ public class SocialSharingPlugin: NSObject, FlutterPlugin {
             case "airdropShareText":
                 guard let args = call.arguments as? [String: Any] else { return result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil)) }
                 self.airdropShareText(args: args, result: result)
-
-            case "airdropShareTextV1":
-                guard let args = call.arguments as? [String: Any] else { return result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil)) }
-                self.airdropShareText1(args: args, result: result)
-
 
     default:
       result(FlutterMethodNotImplemented)
@@ -219,128 +209,72 @@ public class SocialSharingPlugin: NSObject, FlutterPlugin {
           }
       }
 
-
     
-    func shareToTiktokOneFile(args : [String: Any?],result: @escaping FlutterResult) {
-        let videoFile = args["filePath"] as? String
-        let redirectUrl = args["redirectUrl"] as? String
-        let fileType = args["fileType"] as? String
-        let videoData = try? Data(contentsOf:  URL(fileURLWithPath: videoFile!)) as NSData
-        
-
-        PHPhotoLibrary.shared().performChanges({
-
-            let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0];
-            let filePath = "\(documentsPath)/\(Date().description)" + (fileType == "image" ? ".jpeg" : ".mp4")
-
-            videoData!.write(toFile: filePath, atomically: true)
-            if fileType == "image" {
-                PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: URL(fileURLWithPath: filePath))
-
-            }else {
-                PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: URL(fileURLWithPath: filePath))
-
-            }
-        },
-        completionHandler: { success, error in
-
-            if success {
-
-                let fetchOptions = PHFetchOptions()
-
-                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-
-                let fetchResult = PHAsset.fetchAssets(with: fileType == "image" ? .image : .video, options: fetchOptions)
-
-                if let lastAsset = fetchResult.firstObject {
-                    let localIdentifier = lastAsset.localIdentifier
-                    let shareRequest = TikTokShareRequest(localIdentifiers: [localIdentifier], mediaType: fileType == "image" ? .image : .video, redirectURI: redirectUrl!)
-                    shareRequest.shareFormat = .normal
-                    DispatchQueue.main.async {
-                        shareRequest.send()
-                        result("success")
-                    }
-                }
-            }
-            else if let error = error {
-
-                print(error.localizedDescription)
-            }
-            else {
-
-                result("Error getting the files!")
-            }
-        })
-    }
-
-
-
-    
-    func shareToTiktokMultiFilesV1(args: [String: Any?], result: @escaping FlutterResult) {
-        guard let filePaths = args["filePaths"] as? [String],
-              let redirectUrl = args["redirectUrl"] as? String,
-              let fileType = args["fileType"] as? String else {
-            result("Invalid arguments")
-            return
-        }
-        
-        PHPhotoLibrary.shared().performChanges({
-            for filePath in filePaths {
-                guard let videoData = try? Data(contentsOf: URL(fileURLWithPath: filePath)) as NSData else {
-                    continue // Skip files that can't be read
-                }
-                
-                let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-                let filePath = "\(documentsPath)/\(Date().description)" + (fileType == "image" ? ".jpeg" : ".mp4")
-                
-                videoData.write(toFile: filePath, atomically: true)
-                
-                if fileType == "image" {
-                    PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: URL(fileURLWithPath: filePath))
-                } else {
-                    PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: URL(fileURLWithPath: filePath))
-                }
-            }
-        }, completionHandler: { success, error in
-            if success {
-                let fetchOptions = PHFetchOptions()
-                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-                
-                let fetchResult = PHAsset.fetchAssets(with: fileType == "image" ? .image : .video, options: fetchOptions)
-                
-                var localIdentifiers: [String] = []
-                
-                fetchResult.enumerateObjects { asset, _, _ in
-                    localIdentifiers.append(asset.localIdentifier)
-                }
-                
-                if !localIdentifiers.isEmpty {
-                    let shareRequest = TikTokShareRequest(
-                        localIdentifiers: localIdentifiers,
-                        mediaType: fileType == "image" ? .image : .video,
-                        redirectURI: redirectUrl
-                    )
-                    shareRequest.shareFormat = .normal
-                    
-                    DispatchQueue.main.async {
-                        shareRequest.send()
-                        result("success")
-                    }
-                } else {
-                    result("No assets found to share!")
-                }
-            } else if let error = error {
-                print(error.localizedDescription)
-                result("Error: \(error.localizedDescription)")
-            } else {
-                result("Unknown error occurred!")
-            }
-        })
-    }
+//     func shareToTiktokMultiFilesV1(args: [String: Any?], result: @escaping FlutterResult) {
+//         guard let filePaths = args["filePaths"] as? [String],
+//               let redirectUrl = args["redirectUrl"] as? String,
+//               let fileType = args["fileType"] as? String else {
+//             result("Invalid arguments")
+//             return
+//         }
+//
+//         PHPhotoLibrary.shared().performChanges({
+//             for filePath in filePaths {
+//                 guard let videoData = try? Data(contentsOf: URL(fileURLWithPath: filePath)) as NSData else {
+//                     continue // Skip files that can't be read
+//                 }
+//
+//                 let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+//                 let filePath = "\(documentsPath)/\(Date().description)" + (fileType == "image" ? ".jpeg" : ".mp4")
+//
+//                 videoData.write(toFile: filePath, atomically: true)
+//
+//                 if fileType == "image" {
+//                     PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: URL(fileURLWithPath: filePath))
+//                 } else {
+//                     PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: URL(fileURLWithPath: filePath))
+//                 }
+//             }
+//         }, completionHandler: { success, error in
+//             if success {
+//                 let fetchOptions = PHFetchOptions()
+//                 fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+//
+//                 let fetchResult = PHAsset.fetchAssets(with: fileType == "image" ? .image : .video, options: fetchOptions)
+//
+//                 var localIdentifiers: [String] = []
+//
+//                 fetchResult.enumerateObjects { asset, _, _ in
+//                     localIdentifiers.append(asset.localIdentifier)
+//                 }
+//
+//                 if !localIdentifiers.isEmpty {
+//                     let shareRequest = TikTokShareRequest(
+//                         localIdentifiers: localIdentifiers,
+//                         mediaType: fileType == "image" ? .image : .video,
+//                         redirectURI: redirectUrl
+//                     )
+//                     shareRequest.shareFormat = .normal
+//
+//                     DispatchQueue.main.async {
+//                         shareRequest.send()
+//                         result("success")
+//                     }
+//                 } else {
+//                     result("No assets found to share!")
+//                 }
+//             } else if let error = error {
+//                 print(error.localizedDescription)
+//                 result("Error: \(error.localizedDescription)")
+//             } else {
+//                 result("Unknown error occurred!")
+//             }
+//         })
+//     }
 
     
     
-    private func shareToTikTokMultiFiles1(args: [String: Any], result: @escaping FlutterResult) {
+    private func shareToTikTokMultiFiles(args: [String: Any], result: @escaping FlutterResult) {
         guard let filePaths = args["filePaths"] as? [String],
               let redirectUrl = args["redirectUrl"] as? String,
               let fileTypeString = args["fileType"] as? String else {
@@ -455,41 +389,6 @@ private func airdropShareText(args: [String: Any], result: @escaping FlutterResu
         result(nil) // Success
     }
 }
-
-private func airdropShareText1(args: [String: Any], result: @escaping FlutterResult) {
-    guard let text = args["text"] as? String else {
-        return result(FlutterError(code: "INVALID_ARGUMENTS", message: "Missing required arguments", details: nil))
-    }
-
-    var rootViewController: UIViewController?
-
-    if #available(iOS 13.0, *) {
-        rootViewController = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .first?.windows
-            .first(where: { $0.isKeyWindow })?.rootViewController
-    } else {
-        rootViewController = UIApplication.shared.keyWindow?.rootViewController
-    }
-
-    guard let rootVC = rootViewController else {
-        return result(FlutterError(code: "NO_VIEW_CONTROLLER", message: "Root view controller not found", details: nil))
-    }
-
-    // Create AirDrop-specific activity type
-    let activityController = UIActivityViewController(activityItems: [text], applicationActivities: nil)
-
-    // Exclude all activities (effectively leaving only AirDrop)
-    activityController.excludedActivityTypes = UIActivity.ActivityType.allCases
-        .filter { $0 != .airDrop }
-
-    activityController.popoverPresentationController?.sourceView = rootVC.view
-
-    rootVC.present(activityController, animated: true) {
-        result(nil) // Success
-    }
-}
-
 
   private func launchSnapchatPreviewWithMultipleFiles(args: [String: Any], result: @escaping FlutterResult) {
       guard let filePaths = args["filePaths"] as? [String],

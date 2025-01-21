@@ -16,7 +16,7 @@ class Tiktok {
       throw (e, s);
     }
   }
-  static shareToTikTokMultiFiles1(
+  static shareToIos(
       {required List<String> files,
       required String redirectUrl,
       required String filesType}) async {
@@ -35,41 +35,23 @@ class Tiktok {
     }
   }
 
-  static shareToTikTokMultiFiles(
-      {required List<String> files,
-      required String redirectUrl,
-      required String filesType}) async {
-    try {
-      await platform.invokeMethod('shareToTiktokMultiFilesV1', {
-        'filePaths': files,
-        "redirectUrl": redirectUrl,
-        "fileType": filesType
-      });
-    } on PlatformException catch (e, s) {
-      log("Failed with error : '${e.message}'. \n $s");
-      throw (e, s);
-    } catch (e, s) {
-      log("Failed with error : '$e'. \n $s");
-      throw (e, s);
-    }
-  }
-
-  static shareToTiktokOneFile(
-      {required String file,
-      required String redirectUrl,
-      required String filesType}) async {
-    try {
-      await platform.invokeMethod('shareToTiktokOneFile', {
-        'filePath': file,
-        "redirectUrl": redirectUrl,
-        "fileType": filesType
-      });
-    } on PlatformException catch (e, s) {
-      log("Failed with error : '${e.message}'. \n $s");
-      throw (e, s);
-    } catch (e, s) {
-      log("Failed with error : '$e'. \n $s");
-      throw (e, s);
-    }
-  }
+  // static shareToTikTokMultiFiles(
+  //     {required List<String> files,
+  //     required String redirectUrl,
+  //     required String filesType}) async {
+  //   try {
+  //     await platform.invokeMethod('shareToTiktokMultiFilesV1', {
+  //       'filePaths': files,
+  //       "redirectUrl": redirectUrl,
+  //       "fileType": filesType
+  //     });
+  //   } on PlatformException catch (e, s) {
+  //     log("Failed with error : '${e.message}'. \n $s");
+  //     throw (e, s);
+  //   } catch (e, s) {
+  //     log("Failed with error : '$e'. \n $s");
+  //     throw (e, s);
+  //   }
+  // }
+  //
 }
