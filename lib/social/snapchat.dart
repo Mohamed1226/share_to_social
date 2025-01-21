@@ -5,7 +5,7 @@ class SnapChat {
   static const platform = MethodChannel('social_sharing');
 
   /// this add sticker to camera in snapchat
-  static  shareAsSticker({
+  static shareAsSticker({
     required String stickerPath,
     required String clintID,
     double posX = 0.2,
@@ -34,8 +34,7 @@ class SnapChat {
   }
 
   /// share multi files videos or images
-  static Future<void> share(
-      {required String clintID, required List<String> files}) async {
+  static Future<void> share({required String clintID, required List<String> files}) async {
     try {
       await platform.invokeMethod('launchSnapchatPreviewWithMultipleFiles', {
         'filePaths': files,
@@ -49,5 +48,4 @@ class SnapChat {
       throw (e, s);
     }
   }
-
 }

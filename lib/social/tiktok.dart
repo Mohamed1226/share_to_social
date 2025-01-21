@@ -16,16 +16,12 @@ class Tiktok {
       throw (e, s);
     }
   }
+
   static shareToIos(
-      {required List<String> files,
-      required String redirectUrl,
-      required String filesType}) async {
+      {required List<String> files, required String redirectUrl, required String filesType}) async {
     try {
-      await platform.invokeMethod('shareToTikTokMultiFiles1', {
-        'filePaths': files,
-        "redirectUrl": redirectUrl,
-        "fileType": filesType
-      });
+      await platform.invokeMethod('shareToTikTokMultiFiles1',
+          {'filePaths': files, "redirectUrl": redirectUrl, "fileType": filesType});
     } on PlatformException catch (e, s) {
       log("Failed with error : '${e.message}'. \n $s");
       throw (e, s);

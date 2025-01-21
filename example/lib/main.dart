@@ -57,13 +57,17 @@ class _MyAppState extends State<MyApp> {
             children: [
               ElevatedButton(
                 onPressed: () async {
-                  FilePickerResult? result =
-                      await FilePicker.platform.pickFiles();
+                  FilePickerResult? result = await FilePicker.platform.pickFiles();
 
                   if (result != null) {
-                    SnapChat.share(
-                        clintID: "e40a41de-7196-42b1-a454-e96bff26a61a",
-                        files: [result.files.single.path!]);
+                    try {
+                      await SnapChat.share(
+                          clintID: "e40a41de-7196-42b1-a454-e96bff26a61a",
+                          files: [result.files.single.path!]);
+                    } catch (e, s) {
+                      log("error is $e  $s");
+                      AppToast.showErrorToast(e.toString());
+                    }
                   }
                 },
                 child: const Text("share to snapchat"),
@@ -71,18 +75,22 @@ class _MyAppState extends State<MyApp> {
               if (Platform.isIOS)
                 ElevatedButton(
                   onPressed: () async {
-                    FilePickerResult? result =
-                        await FilePicker.platform.pickFiles();
+                    FilePickerResult? result = await FilePicker.platform.pickFiles();
 
                     if (result != null) {
-                      final fileType = determineFileType(
-                          result.files.map((file) => file.extension).toList());
+                      final fileType =
+                          determineFileType(result.files.map((file) => file.extension).toList());
                       if (fileType == null) return;
-                      Tiktok.shareToIos(
-                          files:
-                              result.files.map((file) => file.path!).toList(),
-                          filesType: fileType,
-                          redirectUrl: "yourapp://tiktok-share");
+
+                      try {
+                        await Tiktok.shareToIos(
+                            files: result.files.map((file) => file.path!).toList(),
+                            filesType: fileType,
+                            redirectUrl: "yourapp://tiktok-share");
+                      } catch (e, s) {
+                        log("error is $e  $s");
+                        AppToast.showErrorToast(e.toString());
+                      }
                     }
                   },
                   child: const Text("share to tiktok"),
@@ -90,43 +98,54 @@ class _MyAppState extends State<MyApp> {
               if (Platform.isAndroid)
                 ElevatedButton(
                   onPressed: () async {
-                    FilePickerResult? result =
-                        await FilePicker.platform.pickFiles();
+                    FilePickerResult? result = await FilePicker.platform.pickFiles();
 
                     if (result != null) {
-                      final fileType = determineFileType(
-                          result.files.map((file) => file.extension).toList());
+                      final fileType =
+                          determineFileType(result.files.map((file) => file.extension).toList());
                       if (fileType == null) return;
-                      shareWithCatchErrors(Tiktok.shareToAndroid(
-                        result.files.map((file) => file.path!).toList(),
-                      ));
+
+                      try {
+                        Tiktok.shareToAndroid(
+                          result.files.map((file) => file.path!).toList(),
+                        );
+                      } catch (e, s) {
+                        log("error is $e  $s");
+                        AppToast.showErrorToast(e.toString());
+                      }
                     }
                   },
                   child: const Text("share to tiktok"),
                 ),
               ElevatedButton(
                 onPressed: () async {
-                  FilePickerResult? result =
-                      await FilePicker.platform.pickFiles();
+                  FilePickerResult? result = await FilePicker.platform.pickFiles();
                   String clintId = "";
 
                   /// add you clint id here
                   if (result != null) {
-                    shareWithCatchErrors(SnapChat.shareAsSticker(
-                        clintID: clintId,
-                        stickerPath: result.files.single.path!));
+                    try {
+                      SnapChat.shareAsSticker(
+                          clintID: clintId, stickerPath: result.files.single.path!);
+                    } catch (e, s) {
+                      log("error is $e  $s");
+                      AppToast.showErrorToast(e.toString());
+                    }
                   }
                 },
                 child: const Text("share to snapchat as sticker"),
               ),
               ElevatedButton(
                 onPressed: () async {
-                  FilePickerResult? result =
-                      await FilePicker.platform.pickFiles();
+                  FilePickerResult? result = await FilePicker.platform.pickFiles();
 
                   if (result != null) {
-                    shareWithCatchErrors(
-                        Instagram.share([result.files.single.path!]));
+                    try {
+                      await Instagram.share([result.files.single.path!]);
+                    } catch (e, s) {
+                      log("error is $e  $s");
+                      AppToast.showErrorToast(e.toString());
+                    }
                   }
                 },
                 child: const Text("share to instagram"),
@@ -134,7 +153,12 @@ class _MyAppState extends State<MyApp> {
               if (Platform.isIOS)
                 ElevatedButton(
                   onPressed: () async {
-                    shareWithCatchErrors(AirDrop.share("sharing this text"));
+                    try {
+                      await AirDrop.share("sharing this text");
+                    } catch (e, s) {
+                      log("error is $e  $s");
+                      AppToast.showErrorToast(e.toString());
+                    }
                   },
                   child: const Text("share to airDrop"),
                 ),
@@ -143,15 +167,6 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
-  }
-
-  shareWithCatchErrors(Function share) {
-    try {
-      share();
-    } catch (e, s) {
-      log("error is $e  $s");
-      AppToast.showErrorToast(e.toString());
-    }
   }
 
   String? determineFileType(List<String?> fileExtensions) {

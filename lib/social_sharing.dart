@@ -1,4 +1,3 @@
-
 import 'social_sharing_platform_interface.dart';
 
 class SocialSharing {
