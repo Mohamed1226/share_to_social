@@ -9,8 +9,8 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:share_to_social/social_sharing.dart';
 
-import 'package:social_sharing/social_sharing.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();

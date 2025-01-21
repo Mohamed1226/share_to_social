@@ -16,16 +16,4 @@ class AirDrop {
       throw (e, s);
     }
   }
-
-  static share1(String text) async {
-    try {
-      await platform.invokeMethod('airdropShareTextV1', {'text': text});
-    } on PlatformException catch (e, s) {
-      log("Failed with error : '${e.message}'. \n $s");
-      throw (e, s);
-    } catch (e, s) {
-      log("Failed with error : '$e'. \n $s");
-      throw (e, s);
-    }
-  }
 }

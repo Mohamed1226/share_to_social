@@ -62,6 +62,8 @@
 	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
+ 	<key>SCSDKClientId</key>
+ 	<string>your snapchat client key</string>
 	<key>TikTokClientKey</key>
 	<string>your tiktok client key</string>
 	    <key>CFBundleURLTypes</key>
