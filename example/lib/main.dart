@@ -61,8 +61,25 @@ class _MyAppState extends State<MyApp> {
 
                   if (result != null) {
                     try {
+                      await SnapChat.shareAsSticker(
+                          clintID: "add your client id",
+                          stickerPath: result.files.single.path!);
+                    } catch (e, s) {
+                      log("error is $e  $s");
+                      AppToast.showErrorToast(e.toString());
+                    }
+                  }
+                },
+                child: const Text("share to snapchat as sticker"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+                  if (result != null) {
+                    try {
                       await SnapChat.share(
-                          clintID: "e40a41de-7196-42b1-a454-e96bff26a61a",
+                          clintID: "add your client id",
                           files: [result.files.single.path!]);
                     } catch (e, s) {
                       log("error is $e  $s");
@@ -117,24 +134,6 @@ class _MyAppState extends State<MyApp> {
                   },
                   child: const Text("share to tiktok"),
                 ),
-              ElevatedButton(
-                onPressed: () async {
-                  FilePickerResult? result = await FilePicker.platform.pickFiles();
-                  String clintId = "";
-
-                  /// add you clint id here
-                  if (result != null) {
-                    try {
-                      SnapChat.shareAsSticker(
-                          clintID: clintId, stickerPath: result.files.single.path!);
-                    } catch (e, s) {
-                      log("error is $e  $s");
-                      AppToast.showErrorToast(e.toString());
-                    }
-                  }
-                },
-                child: const Text("share to snapchat as sticker"),
-              ),
               ElevatedButton(
                 onPressed: () async {
                   FilePickerResult? result = await FilePicker.platform.pickFiles();
