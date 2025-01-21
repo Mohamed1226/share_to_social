@@ -5,7 +5,7 @@ class SnapChat {
   static const platform = MethodChannel('social_sharing');
 
   /// this add sticker to camera in snapchat
-  static Future<void> shareAsSticker({
+  static  shareAsSticker({
     required String stickerPath,
     required String clintID,
     double posX = 0.2,

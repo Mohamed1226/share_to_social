@@ -1,12 +1,15 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:permission_handler/permission_handler.dart';
-import 'package:social_sharing/social/airdrop.dart';
-import 'package:social_sharing/social/instgram.dart';
-import 'package:social_sharing/social/snapchat.dart';
-import 'package:social_sharing/social/tiktok.dart';
+import 'package:share_to_social/social/airdrop.dart';
+import 'package:share_to_social/social/instgram.dart';
+import 'package:share_to_social/social/snapchat.dart';
+import 'package:share_to_social/social/tiktok.dart';
+
 import 'package:file_picker/file_picker.dart';
 
 void main() {
@@ -65,57 +68,42 @@ class _MyAppState extends State<MyApp> {
                 },
                 child: const Text("share to snapchat"),
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  FilePickerResult? result =
-                      await FilePicker.platform.pickFiles();
+              if (Platform.isIOS)
+                ElevatedButton(
+                  onPressed: () async {
+                    FilePickerResult? result =
+                        await FilePicker.platform.pickFiles();
 
-                  if (result != null) {
-                    final fileType = determineFileType(
-                        result.files.map((file) => file.extension).toList());
-                    if (fileType == null) return;
-                    Tiktok.shareToTikTokMultiFiles(
-                        files: result.files.map((file) => file.path!).toList(),
-                        filesType: fileType,
-                        redirectUrl: "yourapp://tiktok-share");
-                  }
-                },
-                child: const Text("share to tiktok"),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  FilePickerResult? result =
-                      await FilePicker.platform.pickFiles();
+                    if (result != null) {
+                      final fileType = determineFileType(
+                          result.files.map((file) => file.extension).toList());
+                      if (fileType == null) return;
+                      Tiktok.shareToIos(
+                          files:
+                              result.files.map((file) => file.path!).toList(),
+                          filesType: fileType,
+                          redirectUrl: "yourapp://tiktok-share");
+                    }
+                  },
+                  child: const Text("share to tiktok"),
+                ),
+              if (Platform.isAndroid)
+                ElevatedButton(
+                  onPressed: () async {
+                    FilePickerResult? result =
+                        await FilePicker.platform.pickFiles();
 
-                  if (result != null) {
-                    final fileType = determineFileType(
-                        result.files.map((file) => file.extension).toList());
-                    if (fileType == null) return;
-                    Tiktok.shareToTikTokMultiFiles1(
-                        files: result.files.map((file) => file.path!).toList(),
-                        filesType: fileType,
-                        redirectUrl: "yourapp://tiktok-share");
-                  }
-                },
-                child: const Text("share to tiktok"),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  FilePickerResult? result =
-                      await FilePicker.platform.pickFiles();
-
-                  if (result != null) {
-                    final fileType = determineFileType(
-                        result.files.map((file) => file.extension).toList());
-                    if (fileType == null) return;
-                    Tiktok.shareToTiktokOneFile(
-                        file: result.files.single.path!,
-                        filesType: fileType,
-                        redirectUrl: "yourapp://tiktok-share");
-                  }
-                },
-                child: const Text("share to tiktok"),
-              ),
+                    if (result != null) {
+                      final fileType = determineFileType(
+                          result.files.map((file) => file.extension).toList());
+                      if (fileType == null) return;
+                      shareWithCatchErrors(Tiktok.shareToAndroid(
+                        result.files.map((file) => file.path!).toList(),
+                      ));
+                    }
+                  },
+                  child: const Text("share to tiktok"),
+                ),
               ElevatedButton(
                 onPressed: () async {
                   FilePickerResult? result =
@@ -124,9 +112,9 @@ class _MyAppState extends State<MyApp> {
 
                   /// add you clint id here
                   if (result != null) {
-                    SnapChat.shareAsSticker(
+                    shareWithCatchErrors(SnapChat.shareAsSticker(
                         clintID: clintId,
-                        stickerPath: result.files.single.path!);
+                        stickerPath: result.files.single.path!));
                   }
                 },
                 child: const Text("share to snapchat as sticker"),
@@ -137,7 +125,8 @@ class _MyAppState extends State<MyApp> {
                       await FilePicker.platform.pickFiles();
 
                   if (result != null) {
-                    Instagram.share([result.files.single.path!]);
+                    shareWithCatchErrors(
+                        Instagram.share([result.files.single.path!]));
                   }
                 },
                 child: const Text("share to instagram"),
@@ -145,32 +134,24 @@ class _MyAppState extends State<MyApp> {
               if (Platform.isIOS)
                 ElevatedButton(
                   onPressed: () async {
-                    FilePickerResult? result =
-                        await FilePicker.platform.pickFiles();
-
-                    if (result != null) {
-                      AirDrop.share("sharing this text");
-                    }
+                    shareWithCatchErrors(AirDrop.share("sharing this text"));
                   },
                   child: const Text("share to airDrop"),
-                ),
-              if (Platform.isIOS)
-                ElevatedButton(
-                  onPressed: () async {
-                    FilePickerResult? result =
-                    await FilePicker.platform.pickFiles();
-
-                    if (result != null) {
-                      AirDrop.share1("sharing this text");
-                    }
-                  },
-                  child: const Text("share to airDrop v1"),
                 ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  shareWithCatchErrors(Function share) {
+    try {
+      share();
+    } catch (e, s) {
+      log("error is $e  $s");
+      AppToast.showErrorToast(e.toString());
+    }
   }
 
   String? determineFileType(List<String?> fileExtensions) {
@@ -199,5 +180,18 @@ class _MyAppState extends State<MyApp> {
       return 'video';
     }
     return null;
+  }
+}
+
+class AppToast {
+  static void showErrorToast(String msg, {Toast toast = Toast.LENGTH_SHORT}) {
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: toast,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.white,
+        textColor: Colors.red,
+        fontSize: 16.0);
   }
 }
