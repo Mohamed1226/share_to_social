@@ -25,9 +25,9 @@ Share text as strings.
 
 - [Permissions](#permissions)
 
-- [Android Configuration](#android-configuration)
+- [Public Android Setup](#android-setup)
 
-- [Ios Setup](#ios-setup)
+- [Public Ios Setup](#ios-setup)
 
 - [Tiktok Setup](#tiktok-setup)
 
@@ -53,7 +53,7 @@ You need to request permission in your app as follows:
 var status = await Permission.photos.request();
 ```
 
-## Android Configuration
+## Android setup
 
 Add the following permissions in your AndroidManifest.xml:
 
