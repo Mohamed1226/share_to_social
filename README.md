@@ -2,10 +2,10 @@
 # share_to_social Package
  is a powerful Flutter package that simplifies sharing files to popular social media platforms like TikTok, Snapchat, and Instagram. With this package, you can enable seamless sharing of images, videos, and other files directly from your app to these platforms, enhancing user engagement and making social media integration effortless.
 
-![demo1](images/tiktok.mp4)
-![demo2](images/sticker.mp4)
-![demo3](images/insta.mp4)
-![demo4](images/snapchat.mp4)
+![demo1](images/tiktok.gif)
+![demo2](images/sticker.gif)
+![demo3](images/insta.gif)
+![demo4](images/snapchat.gif)
 
 ## Features
 ### TikTok Integration:
