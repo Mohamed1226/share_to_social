@@ -17,6 +17,8 @@ Fully compatible with Snapchat's sharing capabilities.
 ### Instagram Integration:
 Share photos and videos to Instagram Stories.
 Includes support for Instagram Reels.
+### Airdrop for Ios:
+Share text as strings.
 
 
 ## Table of contents
