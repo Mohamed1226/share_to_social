@@ -53,7 +53,7 @@ You need to request permission in your app as follows:
 var status = await Permission.photos.request();
 ```
 
-## Android setup
+## Public Android setup
 
 Add the following permissions in your AndroidManifest.xml:
 
@@ -101,7 +101,7 @@ Create a file named provider_paths_app.xml in the res/xml folder with the follow
     <external-path name="external_files" path="." />
 </paths>
 ```
-## Ios setup
+## Public Ios setup
 Add the following configurations in your Info.plist:
 
 ```
