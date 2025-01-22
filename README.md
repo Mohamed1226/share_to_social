@@ -25,9 +25,9 @@ Share text as strings.
 
 - [Permissions](#permissions)
 
-- [Public Android Setup](#android-setup)
+- [Public Android Setup](#public-android-setup)
 
-- [Public Ios Setup](#ios-setup)
+- [Public Ios Setup](#public-ios-setup)
 
 - [Tiktok Setup](#tiktok-setup)
 
