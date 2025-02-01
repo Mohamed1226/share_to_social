@@ -1,13 +1,13 @@
 Pod::Spec.new do |s|
-  s.name             = 'social_sharing'
+  s.name             = 'share_to_social'
   s.version          = '0.0.1'
   s.summary          = 'A new Flutter project.'
   s.description      = <<-DESC
 A new Flutter project.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://github.com/Mohamed1226/share_to_social'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Your Company' => 'mohamed.adel.dev9@gmail.com }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
