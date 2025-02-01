@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:social_sharing/social_sharing_method_channel.dart';
+import 'package:share_to_social/social_sharing_method_channel.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
