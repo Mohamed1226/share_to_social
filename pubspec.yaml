@@ -1,6 +1,6 @@
 name: share_to_social
 description: share_to_social is a powerful Flutter package that simplifies sharing files to popular social media platforms like TikTok, Snapchat, and Instagram
-version: 0.0.1
+version: 1.0.0
 homepage: https://github.com/Mohamed1226/share_to_social
 
 environment:
