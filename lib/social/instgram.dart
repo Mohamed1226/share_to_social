@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:flutter/services.dart';
+
 ///
 class Instagram {
   ///
   static const platform = MethodChannel('social_sharing');
+
   ///
   static share(List<String> file) async {
     try {

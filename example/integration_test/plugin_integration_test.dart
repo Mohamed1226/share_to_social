@@ -12,7 +12,5 @@ import 'package:integration_test/integration_test.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('getPlatformVersion test', (WidgetTester tester) async {
-
-  });
+  testWidgets('getPlatformVersion test', (WidgetTester tester) async {});
 }

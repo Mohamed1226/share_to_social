@@ -21,7 +21,5 @@ void main() {
         .setMockMethodCallHandler(channel, null);
   });
 
-  test('getPlatformVersion', () async {
-
-  });
+  test('getPlatformVersion', () async {});
 }
